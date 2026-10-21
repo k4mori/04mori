@@ -307,7 +307,7 @@ function ghToken(){try{return localStorage.getItem(GHKEY)||''}catch(e){return ''
 function ghGid(){try{return localStorage.getItem(GIDKEY)||''}catch(e){return ''}}
 function loadLocal(){try{const t=localStorage.getItem(LSKEY);return t?JSON.parse(t):null}catch(e){return null}}
 function saveLocal(){try{localStorage.setItem(LSKEY,JSON.stringify(S))}catch(e){}}
-function adopt(x){if(x&&x.cards){S=Object.assign(blank(),x); S.time=S.time||{}; if(!(S.v>=2)){S.cats=WRITTEN.concat(PRACTICAL); S.v=2;} if(!(S.v>=3)){S.v=3;} S.cats=(S.cats||[]).filter(c=>c!=='seizu'&&c!=='denki'); if(S.xp==null){let x=0;Object.values(S.cards).forEach(c=>{x+=c.ok*10+c.ng*2});S.xp=x;}}}
+function adopt(x){if(x&&x.cards){S=Object.assign(blank(),x); S.time=S.time||{}; if(!(S.v>=2)){S.cats=WRITTEN.concat(PRACTICAL); S.v=2;} if(!(S.v>=3)){S.v=3;} S.cats=(S.cats||[]).filter(c=>c!=='seizu'&&c!=='denki'); if(![20,30,40].includes(S.goal)) S.goal=20; if(S.xp==null){let x=0;Object.values(S.cards).forEach(c=>{x+=c.ok*10+c.ng*2});S.xp=x;}}}
 (function(){try{if(!localStorage.getItem(LSKEY)){const k=localStorage.getItem('k4mori-v1'); if(k) localStorage.setItem(LSKEY,k);
   if(!localStorage.getItem('o4mori-gh')){const t=localStorage.getItem('k4mori-gh'); if(t) localStorage.setItem('o4mori-gh',t);}
   if(!localStorage.getItem('o4mori-theme')){const t=localStorage.getItem('k4mori-theme'); if(t) localStorage.setItem('o4mori-theme',t);}}}catch(e){}})(); // 甲4の森からの引き継ぎ（初回のみ）
@@ -763,7 +763,7 @@ function renderHome(){
   const nM=ITEMS.filter(i=>mastered(i.id)).length, nL=ITEMS.filter(i=>!isNew(i.id)&&!mastered(i.id)).length;
   const weak=ITEMS.filter(i=>{const c=S.cards[i.id];return c&&c.ng>0&&c.b<3}).length;
   let week='';for(let k=6;k>=0;k--){const n=S.log[dayKey(TODAY-k)]||0;const l=n===0?0:n<S.goal/2?1:n<S.goal?2:3;const d=new Date(2026,0,1+TODAY-k);week+=`<div><i data-l="${l}">${n?`<em>${n}</em>`:''}</i>${k===0?'今日':(d.getMonth()+1)+'/'+d.getDate()}</div>`}
-  const goalChips=[10,15,20,30,40].map(g=>`<button class="chip" data-goal="${g}" aria-pressed="${S.goal===g}">${g}問</button>`).join('');
+  const goalChips=[20,30,40].map(g=>`<button class="chip" data-goal="${g}" aria-pressed="${S.goal===g}">${g}問</button>`).join('');
   const tiles=CAT_ORDER.map(c=>{const ids=catIds(c);const m=ids.filter(mastered).length;return `<button class="tile" data-cat="${c}"><span class="weight">${CATS[c].w}</span><b>${CATS[c].name}</b><small>${CATS[c].sub}</small><small>${ids.length}問・定着 ${m}</small><span class="bar"><i style="width:${catScore(c)*100}%"></i></span></button>`}).join('');
   app.innerHTML=`
   <div class="colL"><header class="top">
